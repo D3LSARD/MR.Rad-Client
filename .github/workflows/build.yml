@@ -1,0 +1,32 @@
+name: Build MR.Rad VPN APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Build Dummy APK Notification
+      run: |
+        echo "MR.Rad VPN Build Pipeline Initialized"
+        mkdir -p build-output
+        echo "MR.Rad Real VPN Client v14.4" > build-output/version.txt
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: MR.Rad-APK-Package
+        path: build-output/
