@@ -20,11 +20,11 @@ jobs:
         java-version: '17'
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: subosito/android-action@v2
       with:
-        api-level: 33
-        build-tools-version: "33.0.2"
-        cmdline-tools-version: "9.0"
+        targets: android-33
+        build-tools: 33.0.2
+        sdk-tools: "9477386"
 
     - name: Clone VPN Client Base
       run: |
