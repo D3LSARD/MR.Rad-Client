@@ -19,13 +19,6 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK
-      uses: subosito/android-action@v2
-      with:
-        targets: android-33
-        build-tools: 33.0.2
-        sdk-tools: "9477386"
-
     - name: Clone VPN Client Base
       run: |
         git clone --depth 1 https://github.com/2dust/v2rayNG.git source_code
@@ -41,10 +34,12 @@ jobs:
         echo "Customization applied successfully!"
 
     - name: Build APK with Gradle
+      env:
+        ANDROID_HOME: /usr/local/lib/android/sdk
       run: |
         cd source_code
         chmod +x gradlew
-        ./gradlew assembleRelease --stacktrace || ./gradlew assembleDebug
+        ./gradlew assembleDebug --stacktrace
 
     - name: Collect APK Files
       run: |
