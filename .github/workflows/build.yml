@@ -19,6 +19,9 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Clone VPN Client Base
       run: |
         git clone --depth 1 https://github.com/2dust/v2rayNG.git source_code
