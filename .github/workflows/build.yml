@@ -1,4 +1,4 @@
-name: Build MR.Rad VPN APK
+name: Build Real MR.Rad VPN APK
 
 on:
   push:
@@ -19,14 +19,33 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Build Dummy APK Notification
+    - name: Clone VPN Client Base
       run: |
-        echo "MR.Rad VPN Build Pipeline Initialized"
-        mkdir -p build-output
-        echo "MR.Rad Real VPN Client v14.4" > build-output/version.txt
+        git clone --depth 1 https://github.com/2dust/v2rayNG.git source_code
 
-    - name: Upload Build Artifacts
+    - name: Customize App Name and Package ID
+      run: |
+        cd source_code
+        # تغییر پکیج‌نیم به com.mrrad.app
+        find . -type f \( -name "build.gradle" -o -name "*.kt" -o -name "*.java" -o -name "AndroidManifest.xml" \) -exec sed -i 's/com\.v2ray\.ang/com.mrrad.app/g' {} + || true
+        
+        # تغییر نام اپلیکیشن به MR.Rad
+        sed -i 's/<string name="app_name">v2rayNG<\/string>/<string name="app_name">MR.Rad<\/string>/g' app/src/main/res/values/strings.xml || true
+        echo "Customization applied successfully!"
+
+    - name: Build APK with Gradle
+      run: |
+        cd source_code
+        chmod +x gradlew
+        ./gradlew assembleRelease --stacktrace || ./gradlew assembleDebug
+
+    - name: Collect APK Files
+      run: |
+        mkdir -p ../build-output
+        find source_code -name "*.apk" -exec cp {} ../build-output/ \;
+
+    - name: Upload APK Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: MR.Rad-APK-Package
-        path: build-output/
+        name: MR.Rad-Real-APK
+        path: ../build-output/
